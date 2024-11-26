@@ -3,7 +3,26 @@ import smtplib
 from email.message import EmailMessage
 
 
+def save():
+    with open("save.txt", "w") as file:
+        file.write(sender_email_entry.get() + '\n')
+        file.write(recipient_email_entry.get() + '\n')
+        file.write(password_entry.get() + '\n')
+
+def load():
+    try:
+        with open("save.txt", "r") as file:
+            credentials = file.readlines()
+            sender_email_entry.insert(0, credentials[0].strip())
+            recipient_email_entry.insert(0, credentials[1].strip())
+            password_entry.insert(0, credentials[2].strip())
+    except FileNotFoundError:
+        # Файл не найден, игнорируем ошибку
+        pass
+
+
 def send_email():
+    save()
     sender_email = sender_email_entry.get()
     recipient_email = recipient_email_entry.get()
     password = password_entry.get()
@@ -24,9 +43,9 @@ def send_email():
         server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
         server.login(sender_email, password)
         server.send_message(msg)
-        result_label.config(text=f'Ошибка: {e}')
+        result_label.config(text=f'Письмо отправлено')
     except Exception as e:
-        print(f'Ошибка: {e}')
+        result_label.config(text=f'Ошибка: {e}')
     finally:
         if server:
             server.quit()
@@ -61,6 +80,9 @@ Button(text="Отправить", command=send_email).grid(row=5, column=1, stic
 
 result_label = Label(text="")
 result_label.grid(row=6, column=1, sticky=W)
+
+# Загрузка сохраненных данных
+load()
 
 # Запуск главного цикла окна
 window.mainloop()
