@@ -4,11 +4,12 @@ from email.message import EmailMessage
 
 
 def send_email():
-    sender_email = 'l1ly.baga@yandex.ru'
-    recipient_email = 'sales2@zabor-z.ru'
-    password = 'zhmhnlqzwylhoiup' #Это пароль приложения! Не ящика!
-    subject = 'Проверка связи №1'
-    body = 'Привет №1 из Питона!'
+    sender_email = sender_email_entry.get()
+    recipient_email = recipient_email_entry.get()
+    password = password_entry.get()
+    subject = subject_entry.get()
+    body = body_text.get(1.0, END)
+
 
     msg = EmailMessage()
     msg.set_content(body)
@@ -23,7 +24,7 @@ def send_email():
         server = smtplib.SMTP_SSL('smtp.yandex.ru', 465)
         server.login(sender_email, password)
         server.send_message(msg)
-        print('Письмо отправлено!')
+        result_label.config(text=f'Ошибка: {e}')
     except Exception as e:
         print(f'Ошибка: {e}')
     finally:
