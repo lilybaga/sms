@@ -1,6 +1,13 @@
 from tkinter import *
 import smtplib
 from email.message import EmailMessage
+from email.utils import parseaddr
+
+
+def validate_email(email):
+    #Проверка email на соответствие стандартному формату.
+    name, addr = parseaddr(email)
+    return '@' in addr and '.' in addr.split('@')[-1]
 
 
 def save():
@@ -25,6 +32,12 @@ def send_email():
     save()
     sender_email = sender_email_entry.get()
     recipient_email = recipient_email_entry.get()
+
+    # Проверяем оба email-адреса
+    if not validate_email(sender_email) or not validate_email(recipient_email):
+        result_label.config(text='Ошибка: Неверный формат email')
+        return
+
     password = password_entry.get()
     subject = subject_entry.get()
     body = body_text.get(1.0, END)
